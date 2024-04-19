@@ -320,6 +320,24 @@ func (r *Releaser) CreateReleases() error {
 			return err
 		}
 
+		var (
+			latest string
+			pre    bool
+		)
+
+		if r.config.AutoRelease && ch != nil && ch.Metadata != nil {
+			if strings.Contains(ch.Metadata.Version, "-") {
+				pre = true
+				latest = strconv.FormatBool(false)
+			} else {
+				pre = false
+				latest = strconv.FormatBool(true)
+			}
+		} else {
+			pre = r.config.PreRelease
+			latest = strconv.FormatBool(r.config.MakeReleaseLatest)
+		}
+
 		release := &github.Release{
 			Name:        releaseName,
 			Description: r.getReleaseNotes(ch),
@@ -327,8 +345,9 @@ func (r *Releaser) CreateReleases() error {
 				{Path: p},
 			},
 			Commit:               r.config.Commit,
+			PreRelease:           pre,
 			GenerateReleaseNotes: r.config.GenerateReleaseNotes,
-			MakeLatest:           strconv.FormatBool(r.config.MakeReleaseLatest),
+			MakeLatest:           latest,
 		}
 		provFile := fmt.Sprintf("%s.prov", p)
 		if _, err := os.Stat(provFile); err == nil {

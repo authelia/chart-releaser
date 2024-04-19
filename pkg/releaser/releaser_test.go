@@ -434,6 +434,24 @@ func TestReleaser_CreateReleases(t *testing.T) {
 			},
 			error: false,
 		},
+		{
+			name:        "valid-package-pre-release",
+			packagePath: "testdata/release-packages",
+			chart:       "test-chart",
+			version:     "0.1.0",
+			commit:      "",
+			latest:      "true",
+			Releaser: &Releaser{
+				config: &config.Options{
+					PackagePath:       "testdata/release-packages",
+					Commit:            "",
+					PreRelease:        true,
+					PackagesWithIndex: false,
+					MakeReleaseLatest: true,
+				},
+			},
+			error: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -467,6 +485,7 @@ func TestReleaser_CreateReleases(t *testing.T) {
 				assert.Equal(t, tt.commit, fakeGitHub.release.Commit)
 				assert.Equal(t, tt.latest, fakeGitHub.release.MakeLatest)
 				assert.Equal(t, tt.Releaser.config.Commit, fakeGitHub.release.Commit)
+				assert.Equal(t, tt.Releaser.config.PreRelease, fakeGitHub.release.PreRelease)
 				fakeGitHub.AssertNumberOfCalls(t, "CreateRelease", 1)
 			}
 		})

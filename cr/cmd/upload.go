@@ -51,6 +51,8 @@ func init() {
 	uploadCmd.Flags().StringP("git-base-url", "b", "https://api.github.com/", "GitHub Base URL (only needed for private GitHub)")
 	uploadCmd.Flags().StringP("git-upload-url", "u", "https://uploads.github.com/", "GitHub Upload URL (only needed for private GitHub)")
 	uploadCmd.Flags().StringP("commit", "c", "", "Target commit for release")
+	uploadCmd.Flags().Bool("auto-release", false, "Whether to mark release as pre-release and latest automatically based on the chart version")
+	uploadCmd.Flags().Bool("pre-release", false, "Whether to mark release as pre-release")
 	uploadCmd.Flags().Bool("skip-existing", false, "Skip upload if release exists")
 	uploadCmd.Flags().String("release-name-template", "{{ .Name }}-{{ .Version }}", "Go template for computing release names, using chart metadata")
 	uploadCmd.Flags().String("release-notes-file", "", "Markdown file with chart release notes. "+
